@@ -5,6 +5,10 @@ dist/*
 *.userosscache
 *.sln.docstates
 
+*.tsv
+
+analysis/*
+
 # Below created by https://www.gitignore.io/api/visualstudio,qt
 
 ### VisualStudio ###
