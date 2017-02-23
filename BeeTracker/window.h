@@ -1,10 +1,16 @@
 #pragma once
 
 
+#include "AnalysisPage.h"
+#include "ConfigPersistor.h"
+#include "DesignPage.h"
+#include "ExperimentPage.h"
 #include "OutputWriter.h"
-#include <QtWidgets/QMainWindow>
 #include "SplittoButton.h"
 #include "Timer.h"
+#include <QStackedWidget>
+#include <QMainWindow>
+#include <QVector>
 
 
 class QLayoutItem;
@@ -13,20 +19,19 @@ class QLayoutItem;
 class Window : public QMainWindow {
 	Q_OBJECT
 
+	friend class ConfigPersistor;
+
 public:
 	Window(QWidget *parent = 0);
 	~Window();
 
 private:
-	OutputWriter writer;
-	QWidget centralWidget;
-	Timer timer;
-	const unsigned int numberOfRows = 10,
-		numberOfCols = 5;
+	QStackedWidget tabWidget;
+	DesignPage designPage;
+	ExperimentPage experimentPage;
+	AnalysisPage analysisPage;
 
-	void buttonPressed(unsigned int plantId, unsigned int visitId, QTime time, SplittoButton::EventType type);
-	void clearCentralWidgetLayout();
-	void constructExperimentUI();
-	void constructStartUI();
-	static void emptyLayoutItem(QLayoutItem* item);
+	QVector<QString> pageOrder;
+
+	bool resizeOnTabChange = true;
 };

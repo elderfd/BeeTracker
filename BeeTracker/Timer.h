@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include "ExperimentEvent.h"
 #include <QBasicTimer>
 #include <QObject>
 #include <QTime>
@@ -13,15 +14,18 @@ public:
 	Timer();
 	~Timer();
 
-	QTime getTime() const;
+	ExperimentEvent::Time getTime() const;
 
 	void start();
+	void pause();
+	void reset();
 	void stop();
 
 signals:
 	void tick(QTime newTime) const;
 
 private:
+	long long accumulatedTime = 0;
 	QTime time;
 	QBasicTimer timer;
 

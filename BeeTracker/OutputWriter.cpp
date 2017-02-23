@@ -1,3 +1,4 @@
+#include "ExperimentEvent.h"
 #include "OutputWriter.h"
 #include <QFile>
 #include <QTextStream>
@@ -14,7 +15,7 @@ const QString& OutputWriter::getOutputFileName() const {
 }
 
 
-void OutputWriter::setOutputFileName(QString newName) {
+void OutputWriter::setOutputFileName(const QString& newName) {
 	outputFileName = newName;
 }
 
@@ -28,13 +29,15 @@ void OutputWriter::writeHeader() {
 
 	QTextStream outStream(&outFile);
 
-	outStream << "Plant ID" << sep << "Visit ID" << sep << "Time" << sep << "Time/msec" << sep << "Arrive/Leave\n";
+	outStream << "Plant ID" << sep << "Plant X" << sep << "Plant Y" << sep << "Visit ID" << sep << "Time/msec" << sep << "Arrive/Leave\n";
 
 	outFile.close();
 }
 
 
-void OutputWriter::writeArriveEvent(QString plantId, QString visitId, QTime time) {
+void OutputWriter::writeEvent(const ExperimentEvent& evt) {
+	if(!QFile::exists(outputFileName)) writeHeader();
+	
 	QFile outFile(outputFileName);
 
 	if (!outFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
@@ -43,22 +46,26 @@ void OutputWriter::writeArriveEvent(QString plantId, QString visitId, QTime time
 
 	QTextStream outStream(&outFile);
 
-	outStream << plantId << sep << visitId << sep << time.toString("hh:mm:ss:zzz") << sep << time.msecsSinceStartOfDay() << sep << "A\n";
+	outStream << evt << "\n";
 
 	outFile.close();
 }
 
 
-void OutputWriter::writeLeaveEvent(QString plantId, QString visitId, QTime time) {
-	QFile outFile(outputFileName);
-
-	if (!outFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
-		throw std::runtime_error("Failed to open output file!");
+QTextStream& operator<<(QTextStream& out, const ExperimentEvent& evt) {
+	out << evt.plantId << OutputWriter::sep
+		<< evt.x << OutputWriter::sep
+		<< evt.y << OutputWriter::sep
+		<< evt.visitId << OutputWriter::sep
+		<< evt.time << OutputWriter::sep;
+	
+	if (evt.type == ExperimentEvent::Type::ARRIVE) {
+		out << "A";
+	} else if(evt.type == ExperimentEvent::Type::LEAVE) {
+		out << "L";
+	} else {
+		out << "U";
 	}
 
-	QTextStream outStream(&outFile);
-
-	outStream << plantId << sep << visitId << sep << time.toString("hh:mm:ss:zzz") << sep << time.msecsSinceStartOfDay() << sep << "L\n";
-
-	outFile.close();
+	return out;
 }

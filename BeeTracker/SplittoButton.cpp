@@ -56,7 +56,7 @@ void SplittoButton::addSubButton() {
 	newButton->setMinimumWidth(25);
 
 	connect(newButton, &QPushButton::pressed, [this, newButton]() {
-		EventType eventType = newButton->activated ? LEAVE : ARRIVE;
+		ExperimentEvent::Type eventType = newButton->activated ? ExperimentEvent::Type::LEAVE : ExperimentEvent::Type::ARRIVE;
 		
 		if (!newButton->activated) {
 			newButton->setStyleSheet("background-color: rgb(255, 0, 0); color: rgb(255, 255, 255)");

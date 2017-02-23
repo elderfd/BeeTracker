@@ -1,4 +1,7 @@
 <RCC>
-    <qresource prefix="Window">
+    <qresource prefix="/images">
+        <file>Resources/images/pauseButton.svg</file>
+        <file>Resources/images/playButton.svg</file>
+        <file>Resources/images/stopButton.svg</file>
     </qresource>
 </RCC>

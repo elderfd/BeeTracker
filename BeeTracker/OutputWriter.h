@@ -5,6 +5,9 @@
 #include <QTime>
 
 
+class ExperimentEvent;
+
+
 class OutputWriter : public QObject {
 	Q_OBJECT
 
@@ -13,14 +16,13 @@ public:
 	~OutputWriter();
 
 	const QString& getOutputFileName() const;
-	void setOutputFileName(QString newName);
+	void setOutputFileName(const QString& newName);
 
 	void writeHeader();
-	void writeArriveEvent(QString plantId, QString visitId, QTime time);
-	void writeLeaveEvent(QString plantId, QString visitId, QTime time);
+	void writeEvent(const ExperimentEvent& evt);
 
+	static const char sep = '\t';
 private:
 	QString outputFileName;
-	const char sep = '\t';
 };
 

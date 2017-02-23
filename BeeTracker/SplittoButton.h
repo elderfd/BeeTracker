@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include "ExperimentEvent.h"
 #include <QWidget>
 #include <QPushButton>
 
@@ -18,13 +19,8 @@ public:
 	void removeSubButton(unsigned int id);
 	void subButtonPressed();
 
-	enum EventType {
-		ARRIVE,
-		LEAVE
-	};
-
 signals:
-	void pressed(unsigned int buttonID, EventType type);
+	void pressed(unsigned int buttonID, ExperimentEvent::Type type);
 
 private:
 	const Timer& timer;
