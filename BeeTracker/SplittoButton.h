@@ -6,6 +6,7 @@
 #include <QPushButton>
 
 
+class QFrame;
 class Timer;
 
 
@@ -19,12 +20,15 @@ public:
 	void removeSubButton(unsigned int id);
 	void subButtonPressed();
 
+	void setDisplayColour(const QColor& color);
+
 signals:
 	void pressed(unsigned int buttonID, ExperimentEvent::Type type);
 
 private:
 	const Timer& timer;
 	QLayout* buttonLayout;
+	QFrame* internalWidget;
 	unsigned int nextButtonId = 1;
 
 	void addSubButton();

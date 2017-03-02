@@ -18,7 +18,7 @@ public:
 
 	int rowCount(const QModelIndex &parent = QModelIndex()) const override {
 		if (design != nullptr) {
-			return design->plotTypes.size();
+			return design->getAllPlotTypes().size();
 		}
 
 		return 0;
@@ -30,7 +30,7 @@ public:
 
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override {
 		if (design != nullptr && index.isValid() && role == Qt::DisplayRole) {
-			auto plotType = design->plotTypes[index.row()];
+			auto plotType = design->getAllPlotTypes()[index.row()];
 
 			if (index.column() == 0) {
 				return plotType.name;

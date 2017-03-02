@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include "BeeTrackerApp.h"
 
 
 ExperimentPage::ExperimentPage(QWidget* parent) : QWidget(parent) {
@@ -100,12 +101,16 @@ void ExperimentPage::resetButtons(unsigned int nRows, unsigned int nCols) {
 	for (unsigned x = 0; x < nCols; x++) {
 		for (unsigned y = 0; y < nRows; y++) {
 			// + 1 on label because experimentalists used to counting from 1
-			unsigned int id = x * nRows + y + 1;
+			QString id = qApp->designManager.currentDesign()->xyToPlotID(x, y);
 
-			auto button = new SplittoButton(QString::number(id), timer);
+			auto plotType = qApp->designManager.currentDesign()->getPlotType(x, y);
+
+			auto button = new SplittoButton(id, timer);
 			button->setMinimumWidth(75);
 			button->setMinimumHeight(100);
 			button->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+
+			button->setDisplayColour(plotType.displayColour);
 
 			connect(button, &SplittoButton::pressed, [this, x, y](unsigned int visitId, ExperimentEvent::Type type) {
 				recordEvent(x, y, visitId, timer.getTime(), type);

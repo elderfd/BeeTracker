@@ -6,6 +6,8 @@
 class ExperimentDesign;
 class QSpinBox;
 class QVBoxLayout;
+class QGridLayout;
+class QTableView;
 
 
 class DesignPage : public QWidget {
@@ -24,10 +26,14 @@ signals:
 
 private:
 	PlotTypeModel plotTypeModel;
+	QTableView* plotTypeList;
 
 	QSpinBox* rowSpinner = nullptr;
 	QSpinBox* colSpinner = nullptr;
 
 	QVBoxLayout* layout = nullptr;
+
+	QGridLayout* plotGridLayout = nullptr;
+
 };
 

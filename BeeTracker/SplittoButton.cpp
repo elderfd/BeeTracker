@@ -6,21 +6,28 @@
 
 SplittoButton::SplittoButton(QString label, const Timer& timer, QWidget* parent) : QWidget(parent), timer(timer) {
 	this->setLayout(new QVBoxLayout());
-	auto internalWidget = new QFrame();
+	internalWidget = new QFrame(this);
+	internalWidget->setObjectName("internalWidget");
 	internalWidget->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	this->layout()->addWidget(internalWidget);
 
 	auto layout = new QVBoxLayout(internalWidget);
 	
 	QFont font;
-	font.setPointSize(20);
-	auto numberLabel = new QLabel(label);
+	font.setPointSize(14);
+	auto labelBackground = new QFrame(internalWidget);
+	labelBackground->setObjectName("labelBackground");
+	labelBackground->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	auto labelBackgroundLayout = new QVBoxLayout(labelBackground);
+
+	auto numberLabel = new QLabel(label, labelBackground);
 	numberLabel->setFont(font);
 	numberLabel->setMinimumHeight(15);
 	numberLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 	numberLabel->setAlignment(Qt::AlignCenter);
 
-	layout->addWidget(numberLabel);
+	labelBackgroundLayout->addWidget(numberLabel);
+	layout->addWidget(labelBackground);
 
 	buttonLayout = new QHBoxLayout();
 	layout->addLayout(buttonLayout);
@@ -71,4 +78,16 @@ void SplittoButton::addSubButton() {
 	});
 
 	buttonLayout->addWidget(newButton);
+}
+
+void SplittoButton::setDisplayColour(const QColor& colour) {
+	internalWidget->setStyleSheet(
+		"QFrame#internalWidget{background-color: rgb(" +
+		QString::number(colour.red()) +
+		", " +
+		QString::number(colour.green()) +
+		", " +
+		QString::number(colour.blue()) +
+		");}QFrame{background-color: rgb(255,255,255);}"
+	);
 }

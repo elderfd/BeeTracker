@@ -17,10 +17,22 @@ public:
 	public:
 		QString name;
 		QColor displayColour;
+
+		friend bool operator==(const ExperimentDesign::PlotType& left, const ExperimentDesign::PlotType& right);
 	};
 
 	void setNRows(unsigned rows);
 	void setNCols(unsigned cols);
+	void setSize(unsigned rows, unsigned cols);
+
+	void setPlotType(unsigned row, unsigned col, const PlotType& type);
+	const PlotType getPlotType(unsigned row, unsigned col) const;
+
+	const QVector<PlotType> getAllPlotTypes() const;
+	void addPlotType(const PlotType& newType);
+	void deletePlotType(const PlotType& toDelete);
+	void deletePlotType(unsigned index);
+	void editPlotType(unsigned index, const PlotType& newType);
 
 	unsigned nRows() const;
 	unsigned nCols() const;
@@ -30,8 +42,6 @@ public:
 
 	QString xyToPlotID(unsigned int x, unsigned int y) const;
 
-	QVector<PlotType> plotTypes;
-
 	static const unsigned defaultNRows = 5;
 	static const unsigned defaultNCols = 5;
 	static const unsigned maxSize = 10;
@@ -39,5 +49,8 @@ public:
 private:
 	unsigned _nRows = 0;
 	unsigned _nCols = 0;
+
+	QVector<QVector<PlotType>> assignedPlotTypes;
+	QVector<PlotType> plotTypes;
 };
 
