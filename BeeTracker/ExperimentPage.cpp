@@ -30,7 +30,7 @@ ExperimentPage::ExperimentPage(QWidget* parent) : QWidget(parent) {
 
 	auto fileChoiceButton = new QPushButton("Choose output file", this);
 	auto fileChoiceLabel = new QLabel("No file chosen", this);
-
+	
 	connect(fileChoiceButton, &QPushButton::pressed, [this, fileChoiceLabel]() {
 		auto saveFileName = QFileDialog::getSaveFileName(
 			this,
@@ -115,9 +115,6 @@ void ExperimentPage::resetButtons(unsigned int nRows, unsigned int nCols) {
 			connect(button, &SplittoButton::pressed, [this, x, y](unsigned int visitId, ExperimentEvent::Type type) {
 				recordEvent(x, y, visitId, timer.getTime(), type);
 			});
-
-			// TODO: Do some colouring to help readability
-			// if (x % 2 != y % 2) button->setStyleSheet("background-color: rgb(150, 150, 150);");
 
 			buttonLayout->addWidget(button, y, x);
 		}

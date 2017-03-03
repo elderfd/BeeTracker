@@ -49,27 +49,27 @@ Window::Window(QWidget *parent) : QMainWindow(parent) {
 			this->tabWidget.resize(this->tabWidget.minimumSizeHint());
 			this->resize(this->minimumSizeHint());
 			this->adjustSize();
+		}
 
-			// Update the top buttons
-			if (current > 0) {
-				previousPageButton->setEnabled(true);
-				previousPageButton->setText("Previous: " + this->pageOrder[current - 1]);
-			} else {
-				previousPageButton->setEnabled(false);
-				previousPageButton->setText("");
-			}
-			if (current < (this->tabWidget.count() - 1)) {
-				nextPageButton->setText("Next: " + this->pageOrder[current + 1]);
-				nextPageButton->setEnabled(true);
-			} else {
-				nextPageButton->setText("");
-				nextPageButton->setEnabled(false);
-			}
+		// Update the top buttons
+		if (current > 0) {
+			previousPageButton->setEnabled(true);
+			previousPageButton->setText("Previous: " + this->pageOrder[current - 1]);
+		} else {
+			previousPageButton->setEnabled(false);
+			previousPageButton->setText("");
+		}
+		if (current < (this->tabWidget.count() - 1)) {
+			nextPageButton->setText("Next: " + this->pageOrder[current + 1]);
+			nextPageButton->setEnabled(true);
+		} else {
+			nextPageButton->setText("");
+			nextPageButton->setEnabled(false);
+		}
 
-			// TODO: Do any special config for whatever page is chosen
-			if (current == 1) {
-				this->experimentPage.displayDesign(*qApp->designManager.currentDesign());
-			}
+		// TODO: Do any special config for whatever page is chosen
+		if (current == 1) {
+			this->experimentPage.displayDesign(*qApp->designManager.currentDesign());
 		}
 	});
 

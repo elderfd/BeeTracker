@@ -13,9 +13,6 @@
 #include <QVector>
 
 
-class QLayoutItem;
-
-
 class Window : public QMainWindow {
 	Q_OBJECT
 
@@ -33,5 +30,5 @@ private:
 
 	QVector<QString> pageOrder;
 
-	bool resizeOnTabChange = true;
+	bool resizeOnTabChange = false;
 };

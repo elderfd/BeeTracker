@@ -12,6 +12,8 @@
 #include <QMessageBox>
 #include <QScrollArea>
 #include <QHeaderView>
+#include <QGroupBox>
+#include <QSplitter>
 
 
 DesignPage::DesignPage(QWidget* parent) : QWidget(parent) {
@@ -34,17 +36,17 @@ DesignPage::DesignPage(QWidget* parent) : QWidget(parent) {
 	connect(rowSpinner, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &DesignPage::changeCurrentDesignNRows);
 	connect(colSpinner, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &DesignPage::changeCurrentDesignNCols);
 
-	shapeLayout->addWidget(nRowsLabel, 0, 0);
-	shapeLayout->addWidget(rowSpinner, 0, 1);
+	shapeLayout->addWidget(nRowsLabel, 0, 0, Qt::AlignTop | Qt::AlignRight);
+	shapeLayout->addWidget(rowSpinner, 0, 1, Qt::AlignTop | Qt::AlignLeft);
 
-	shapeLayout->addWidget(nColsLabel, 1, 0);
-	shapeLayout->addWidget(colSpinner, 1, 1);
+	shapeLayout->addWidget(nColsLabel, 1, 0, Qt::AlignTop | Qt::AlignRight);
+	shapeLayout->addWidget(colSpinner, 1, 1, Qt::AlignTop | Qt::AlignLeft);
 
 	rowSpinner->setAlignment(Qt::AlignLeft);
 	colSpinner->setAlignment(Qt::AlignLeft);
 
-	rowSpinner->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-	colSpinner->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+	rowSpinner->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+	colSpinner->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 
 	nRowsLabel->setAlignment(Qt::AlignRight);
 	nColsLabel->setAlignment(Qt::AlignRight);
@@ -52,9 +54,27 @@ DesignPage::DesignPage(QWidget* parent) : QWidget(parent) {
 	rowSpinner->setValue(ExperimentDesign::defaultNRows);
 	colSpinner->setValue(ExperimentDesign::defaultNCols);
 
+	rowSpinner->setMaximumWidth(200);
+	colSpinner->setMaximumWidth(200);
+	rowSpinner->setMinimumWidth(50);
+	colSpinner->setMinimumWidth(50);
+	nRowsLabel->setMaximumWidth(200);
+	nColsLabel->setMaximumWidth(200);
+
+	auto plotLayoutBox = new QGroupBox("Plot Layout", this);
+	layout->addWidget(plotLayoutBox);
+
 	auto addPlotTypeButton = new QPushButton("Add", this);
 	auto deletePlotTypeButton = new QPushButton("Delete Selected", this);
 	auto editPlotTypeButton = new QPushButton("Edit Selected", this);
+
+	addPlotTypeButton->setMaximumWidth(150);
+	deletePlotTypeButton->setMaximumWidth(150);
+	editPlotTypeButton->setMaximumWidth(150);
+	
+	addPlotTypeButton->setMinimumWidth(100);
+	deletePlotTypeButton->setMinimumWidth(100);
+	editPlotTypeButton->setMinimumWidth(100);
 
 	plotTypeModel.setDesign(qApp->designManager.currentDesign());
 
@@ -220,14 +240,28 @@ DesignPage::DesignPage(QWidget* parent) : QWidget(parent) {
 	auto colourDelegate = new ColourDelegate(this);
 	plotTypeList->setItemDelegateForColumn(1, colourDelegate);
 
-	layout->addLayout(shapeLayout);
+	plotTypeList->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
 
-	layout->addWidget(addPlotTypeButton);
-	layout->addWidget(deletePlotTypeButton);
-	layout->addWidget(editPlotTypeButton);
-	layout->addWidget(plotTypeList);
+	plotLayoutBox->setLayout(shapeLayout);
 
-	layout->setAlignment(Qt::AlignTop);
+	auto plotTypeBox = new QGroupBox("Plot Types", this);
+	auto plotTypeBoxLayout = new QVBoxLayout(plotTypeBox);
+
+	auto plotTypeListResizer = new QSplitter(this);
+	plotTypeListResizer->setOrientation(Qt::Vertical);
+
+	plotTypeBoxLayout->addWidget(addPlotTypeButton);
+	plotTypeBoxLayout->addWidget(deletePlotTypeButton);
+	plotTypeBoxLayout->addWidget(editPlotTypeButton);
+	plotTypeBoxLayout->addWidget(plotTypeListResizer);
+
+	plotTypeBoxLayout->setAlignment(addPlotTypeButton, Qt::AlignCenter);
+	plotTypeBoxLayout->setAlignment(deletePlotTypeButton, Qt::AlignCenter);
+	plotTypeBoxLayout->setAlignment(editPlotTypeButton, Qt::AlignCenter);
+
+	plotTypeListResizer->addWidget(plotTypeList);
+
+	layout->addWidget(plotTypeBox);
 
 	// Grid to allow setting of plot type
 	auto plotGridScroll = new QScrollArea(this);
@@ -237,7 +271,7 @@ DesignPage::DesignPage(QWidget* parent) : QWidget(parent) {
 
 	plotGridLayout = new QGridLayout(plotGridContent);
 
-	layout->addWidget(plotGridScroll);
+	plotTypeListResizer->addWidget(plotGridScroll);
 
 	plotGridScroll->setLayout(new QHBoxLayout());
 	plotGridScroll->setWidget(plotGridContent);
