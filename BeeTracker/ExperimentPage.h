@@ -44,5 +44,7 @@ private:
 	void clearButtons();
 
 	void setButtonsEnabled(bool enabled);
+
+	Experiment currentExperiment;
 };
 

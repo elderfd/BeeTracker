@@ -1,6 +1,8 @@
 #include "ExperimentEvent.h"
 
 
+ExperimentEvent::ExperimentEvent() {}
+
 
 ExperimentEvent::ExperimentEvent(Time time, Type type, unsigned x, unsigned y, const QString& visitId, const QString& plantId) {
 	this->time = time;

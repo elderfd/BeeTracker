@@ -2,6 +2,7 @@
 #include "Timer.h"
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QEvent>
 
 
 SplittoButton::SplittoButton(QString label, const Timer& timer, QWidget* parent) : QWidget(parent), timer(timer) {
@@ -56,7 +57,7 @@ void SplittoButton::removeSubButton(unsigned int id) {
 
 
 void SplittoButton::addSubButton() {
-	auto newButton = new SubButton(generateButtonId());
+	auto newButton = new SubButton(generateButtonId(), this);
 	
 	newButton->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 	newButton->setMinimumHeight(25);
@@ -74,11 +75,12 @@ void SplittoButton::addSubButton() {
 			removeSubButton(newButton->id);
 		}
 
-		emit pressed(newButton->id, eventType);
+		emit pressed(QString::number(newButton->id), eventType);
 	});
 
 	buttonLayout->addWidget(newButton);
 }
+
 
 void SplittoButton::setDisplayColour(const QColor& colour) {
 	internalWidget->setStyleSheet(
@@ -91,3 +93,4 @@ void SplittoButton::setDisplayColour(const QColor& colour) {
 		");}QFrame{background-color: rgb(255,255,255);}"
 	);
 }
+

@@ -22,7 +22,7 @@ ExperimentDesign::~ExperimentDesign() {}
 void ExperimentDesign::setNRows(unsigned rows) {
 	_nRows = rows;
 
-	while(rows >= assignedPlotTypes.size()) {
+	while(rows > assignedPlotTypes.size()) {
 		QVector<PlotType> newRow;
 		
 		for (unsigned i = 0; i < _nCols; ++i) {
@@ -90,7 +90,7 @@ pugi::xml_node& operator>>(pugi::xml_node& el, ExperimentDesign& design) {
 
 QString ExperimentDesign::xyToPlotID(unsigned int x, unsigned int y) const {
 	// +1 because experimentalists don't count from 0
-	return QString::number(y * _nRows + x + 1);
+	return QString::number(y * _nCols + x + 1);
 }
 
 

@@ -19,6 +19,8 @@ ExperimentPage::ExperimentPage(QWidget* parent) : QWidget(parent) {
 	QFont labelFont;
 	labelFont.setPointSize(20);
 	timeLabel->setFont(labelFont);
+	timeLabel->setMinimumWidth(200);
+	timeLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
 	connect(&timer, &Timer::tick, [this](QTime newTime) {
 		this->timeLabel->setText(newTime.toString("hh:mm:ss"));
@@ -42,12 +44,14 @@ ExperimentPage::ExperimentPage(QWidget* parent) : QWidget(parent) {
 			fileChoiceLabel->setText(saveFileName);
 			stopExperiment();
 			goButton->setEnabled(true);
+			goButton->setToolTip("");
+			pauseButton->setToolTip("");
+			stopButton->setToolTip("");
 		}
 	});
 
 	fileChoiceLayout->addWidget(fileChoiceButton);
 	fileChoiceLayout->addWidget(fileChoiceLabel);
-	fileChoiceLayout->setAlignment(Qt::AlignCenter);
 
 	QSize buttonSize(50, 50);
 
@@ -62,6 +66,18 @@ ExperimentPage::ExperimentPage(QWidget* parent) : QWidget(parent) {
 	stopButton = new QPushButton("", this);
 	stopButton->setIcon(QIcon(":/images/Resources/images/stopButton.svg"));
 	stopButton->setIconSize(buttonSize);
+
+	goButton->setToolTip("You must specify an output file before the experiment can be started.");
+	pauseButton->setToolTip("You must specify an output file before the experiment can be started.");
+	stopButton->setToolTip("You must specify an output file before the experiment can be started.");
+
+	goButton->setFixedSize(buttonSize);
+	pauseButton->setFixedSize(buttonSize);
+	stopButton->setFixedSize(buttonSize);
+
+	goButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	pauseButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	stopButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
 	connect(goButton, &QPushButton::pressed, this, &ExperimentPage::startExperiment);
 	connect(pauseButton, &QPushButton::pressed, this, &ExperimentPage::pauseExperiment);
@@ -82,6 +98,7 @@ ExperimentPage::ExperimentPage(QWidget* parent) : QWidget(parent) {
 	stopButton->setEnabled(false);
 
 	goStopLayout->setAlignment(Qt::AlignCenter);
+	goStopLayout->setSizeConstraint(QLayout::SetMinimumSize);
 
 	layout->addLayout(goStopLayout);
 
@@ -103,22 +120,27 @@ void ExperimentPage::resetButtons(unsigned int nRows, unsigned int nCols) {
 			// + 1 on label because experimentalists used to counting from 1
 			QString id = qApp->designManager.currentDesign()->xyToPlotID(x, y);
 
-			auto plotType = qApp->designManager.currentDesign()->getPlotType(x, y);
+			auto plotType = qApp->designManager.currentDesign()->getPlotType(y, x);
 
-			auto button = new SplittoButton(id, timer);
-			button->setMinimumWidth(75);
+			auto button = new SplittoButton(id, timer, this);
+			button->setMinimumWidth(100);
 			button->setMinimumHeight(100);
 			button->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
 			button->setDisplayColour(plotType.displayColour);
 
-			connect(button, &SplittoButton::pressed, [this, x, y](unsigned int visitId, ExperimentEvent::Type type) {
-				recordEvent(x, y, visitId, timer.getTime(), type);
+			connect(button, &SplittoButton::pressed, [this, x, y](QString visitId, ExperimentEvent::Type type) {
+				ExperimentEvent evt(timer.getTime(), type, x, y, visitId, currentExperiment.design().xyToPlotID(x, y));
+				currentExperiment.addEvent(evt);
+				output.writeEvent(evt);
 			});
 
 			buttonLayout->addWidget(button, y, x);
 		}
 	}
+
+	buttonLayout->setSizeConstraint(QLayout::SetMinimumSize);
+	setButtonsEnabled(false);
 }
 
 
@@ -144,6 +166,8 @@ void ExperimentPage::startExperiment() {
 	stopButton->setEnabled(true);
 
 	setButtonsEnabled(true);
+
+	output.writeHeader();
 }
 
 
@@ -182,5 +206,6 @@ void ExperimentPage::setOutputFileName(const QString& fileName) {
 
 
 void ExperimentPage::displayDesign(const ExperimentDesign& design) {
+	currentExperiment = Experiment(design);
 	resetButtons(design.nRows(), design.nCols());
 }

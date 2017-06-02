@@ -6,6 +6,7 @@
 
 
 class ExperimentEvent;
+class Experiment;
 
 
 class OutputWriter : public QObject {
@@ -20,8 +21,11 @@ public:
 
 	void writeHeader();
 	void writeEvent(const ExperimentEvent& evt);
+	
+	void writeSummary(const Experiment& exp) const;
 
 	static const char sep = '\t';
+
 private:
 	QString outputFileName;
 };

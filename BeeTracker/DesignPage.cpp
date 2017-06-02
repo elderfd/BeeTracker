@@ -81,6 +81,7 @@ DesignPage::DesignPage(QWidget* parent) : QWidget(parent) {
 	plotTypeList = new QTableView(this);
 	plotTypeList->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	plotTypeList->setModel(&plotTypeModel);
+	plotTypeList->setMinimumHeight(50);
 
 	plotTypeList->setSelectionBehavior(QAbstractItemView::SelectRows);
 
@@ -239,6 +240,8 @@ DesignPage::DesignPage(QWidget* parent) : QWidget(parent) {
 
 	auto colourDelegate = new ColourDelegate(this);
 	plotTypeList->setItemDelegateForColumn(1, colourDelegate);
+
+	plotTypeList->selectionModel()->select(plotTypeList->model()->index(0, 0), QItemSelectionModel::Select);
 
 	plotTypeList->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
 

@@ -2,7 +2,6 @@
 #include "ConfigPersistor.h"
 #include <QApplication>
 #include "DesignManager.h"
-#include "ProgramState.h"
 #include "FileOutputManager.h"
 
 
@@ -12,7 +11,6 @@ public:
 	BeeTrackerApp(int argc, char* argv[]);
 	~BeeTrackerApp();
 
-	ProgramState state;
 	DesignManager designManager;
 	FileOutputManager fileOutputManager;
 	ConfigPersistor configPersistor;

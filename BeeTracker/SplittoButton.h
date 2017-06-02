@@ -23,7 +23,7 @@ public:
 	void setDisplayColour(const QColor& color);
 
 signals:
-	void pressed(unsigned int buttonID, ExperimentEvent::Type type);
+	void pressed(QString buttonID, ExperimentEvent::Type type);
 
 private:
 	const Timer& timer;
